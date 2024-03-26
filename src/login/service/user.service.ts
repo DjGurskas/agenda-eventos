@@ -1,49 +1,47 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { User } from './entities/User.entity';
-import { UpdateUserDto } from './dto/update-login.dto';
-import { UserDto } from './dto/user-login.dto';
+import { UpdateUserDto } from '../dto/update-login.dto';
+import { User } from '../dto/user-login.dto';
 import { plainToClass } from 'class-transformer';
-import { SerializedUser } from './types';
 
 @Injectable()
 export class UserService {
-    private users: User[] = [
+  private users: User[] = 
+  [
       {
+        id: 1,
         username: 'Roberta',
         email: 'robertacomvida@gmail.com',
         telephone: 51996898001,
-        password: 'roberta123'
+        password: 'roberta12345678910'
       },
       {
+        id: 2,
         username: 'Jessica',
         email: 'jessicadoida1@gmail.com',
         telephone: 51996898591,
-        password: 'jessica123'
+        password: 'jessica12345678910'
       },
       {
+        id: 3,
         username: 'Juliana',
         email: 'juju666@gmail.com',
         telephone: 51996888001,
-        password: 'jujus2123'
+        password: 'jujus12345678910'
       },
     ];
 
-    getUsers() {
-      return this.users.map((user) => plainToClass(SerializedUser, user))
-    }
-
-    getUserByUsername(username: string) {
-      return this.users.find((user) => user.username == username);
-    }
-
-
-  createUser(userDto: UserDto) {
-    return 'This action adds a new login';
+  getUserById(id: number): User {
+    return this.users.find((user) => user.id === id);
   }
 
-  findAll() {
-    return `This action returns all login`;
+  createUser(user: User): User {
+    this.users.push(user);
+    return user;
+  }
+
+  findAll(): User[] {
+    return this.users;
   }
 
   findOne(id: number) {
@@ -57,5 +55,4 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} login`;
   }
-
 }

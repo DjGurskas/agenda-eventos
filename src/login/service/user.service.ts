@@ -1,32 +1,36 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-
-import { UpdateUserDto } from '../dto/update-login.dto';
-import { User } from '../dto/user-login.dto';
-import { plainToClass } from 'class-transformer';
+import { Injectable } from '@nestjs/common';;
+import { User } from '../entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private dataSource: DataSource
+  ){}
   private users: User[] = 
   [
       {
         id: 1,
-        username: 'Roberta',
+        firstname: 'Roberta',
+        lastname: 'Jessica',
         email: 'robertacomvida@gmail.com',
-        telephone: 51996898001,
         password: 'roberta12345678910'
       },
       {
         id: 2,
-        username: 'Jessica',
+        firstname: 'Jessica',
+        lastname: 'Jessica',
         email: 'jessicadoida1@gmail.com',
-        telephone: 51996898591,
         password: 'jessica12345678910'
       },
       {
         id: 3,
-        username: 'Juliana',
+        firstname: 'Juliana',
+        lastname: 'Paes',
         email: 'juju666@gmail.com',
-        telephone: 51996888001,
         password: 'jujus12345678910'
       },
     ];
@@ -40,19 +44,19 @@ export class UserService {
     return user;
   }
 
-  findAll(): User[] {
-    return this.users;
+  findAll(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} login`;
+   findOne(id: number): Promise<User| null> {
+    return this.userRepository.findOneBy({id});
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number, updateUserDto: any) {
     return `This action updates a #${id} login`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} login`;
+  async remove(id: number): Promise<void> {
+    await this.userRepository.delete(id);
   }
 }

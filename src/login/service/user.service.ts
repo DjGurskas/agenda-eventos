@@ -7,7 +7,8 @@ import { UserRepository } from './user.repository';
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User)
-   private readonly userRepository: Repository<User>) {}
+   private readonly userRepository: Repository<User>
+   ) {}
   private users: User[] = 
   [
       {

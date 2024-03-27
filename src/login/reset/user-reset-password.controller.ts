@@ -1,27 +1,12 @@
 
 
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { ResetPasswordService } from "../service/user-reset-password.service";
+import { ResetPasswordService } from "./user-reset-password.service";
 
 
 @Controller('reset-password')
 export class ResetPasswordController {
   constructor(private readonly resetPasswordService: ResetPasswordService) {}
-
-  /*@Get('email/forgot-password/:email')
-  public async sendEmailForgotPassword(@Param() params): Promise<any>{
-    try {
-      var isEmailSent = await this.authService.sendEmailForgotPassword(
-        params.email
-      );
-      if (isEmailSent) {
-        return new ResponseSuccess('LOGIN.EMAIL_PRESENT', null);
-      }
-    }
-
-  }*/
-  
-
 
   @Post()
   requestReset(@Body('email') email: string): string {

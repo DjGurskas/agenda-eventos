@@ -15,13 +15,13 @@ import { User } from '../entities/user.entity';
 @Controller('user')
 export class UserController {
   constructor(
-    @Inject('USER_SERVICE')
+    @Inject(UserService)
     private readonly userService: UserService,
   ) {}
 
   @Get()
   async getAllUsers(): Promise<User[]> {
-    return this.userService.findAll();
+    return await this.userService.findAll();
   }
 
   @Get(':id')
@@ -31,16 +31,16 @@ export class UserController {
 
   @Post('create-user')
   async ResetPassword(@Body() createUser: SignupInput) {
-    console.log(createUser);
+    return await this.userService.createUser(createUser);
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: User) {
-    console.log(updateUserDto);
+  async update(@Param('id') id: number, @Body() updateUserDto: User) {
+    return await this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Body() removeUserDto: SignupInput) {
-    console.log(removeUserDto);
+  async remove(@Param('id') id: string, @Body() removeUserDto: SignupInput) {
+    return await this.userService.remove(+id);
   }
 }

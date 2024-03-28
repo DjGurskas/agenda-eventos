@@ -9,6 +9,7 @@ async function bootstrap() {
   .setTitle('GPTW Rest')
   .setDescription('The gptw API description')
   .setVersion('1.0')
+  .addTag('user')
   .build();
 
 const document = SwaggerModule.createDocument(app, swaggerConfig);

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';;
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Repository } from 'typeorm';
 import { UserRepository } from './user.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -10,37 +11,17 @@ export class UserService {
    private readonly userRepository: Repository<User>
    ) {}
   private users: User[] = 
-  [
-      {
-        id: 1,
-        firstname: 'Roberta',
-        lastname: 'Jessica',
-        email: 'robertacomvida@gmail.com',
-        password: 'roberta12345678910'
-      },
-      {
-        id: 2,
-        firstname: 'Jessica',
-        lastname: 'Jessica',
-        email: 'jessicadoida1@gmail.com',
-        password: 'jessica12345678910'
-      },
-      {
-        id: 3,
-        firstname: 'Juliana',
-        lastname: 'Paes',
-        email: 'juju666@gmail.com',
-        password: 'jujus12345678910'
-      },
-    ];
+  [];
 
   getUserById(id: number): User {
     return this.users.find((user) => user.id === id);
   }
 
   async createUser(user: User): Promise<User> {
+    user.password = await this.hashPassword(user.password) as any
     await this.userRepository.save(user);
     return user
+
   }
 
   async findAll(): Promise<User[]> {
@@ -51,11 +32,26 @@ export class UserService {
     return await this.userRepository.findOneBy({id});
   }
 
-  async update(id: number, updateUserDto: User) {
-    return await this.userRepository.update(id, updateUserDto);
+  async findOneByEmail(email: string): Promise<User| null> {
+    return await this.userRepository.findOneBy({email});
+  }
+
+  async update(id: number, UpdateUserDto: User) {
+    return await this.userRepository.update(id, UpdateUserDto);
   }
 
   async remove(id: number): Promise<void> {
     await this.userRepository.delete(id);
+  }
+
+  async hashPassword(password: string): Promise<String> {
+    const salt = await bcrypt.genSalt();
+    if (!/^\$2[abxy]?\$\d+\$/.test(password)){
+      return await bcrypt.hash(password, salt);
+    }
+  }
+
+  async checkPassword(newPassword: string, password: string): Promise<boolean> {
+    return await bcrypt.compare(password, newPassword);
   }
 }

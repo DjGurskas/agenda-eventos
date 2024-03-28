@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { UserModule } from './login/module/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthController } from './auth/user-auth.controller';
+import { AuthService } from './auth/user-auth.service';
 
 require('dotenv').config({
   path: '.env'
@@ -22,8 +25,8 @@ require('dotenv').config({
     autoLoadEntities: true,
     synchronize: true,
     schema: "agenda"
-  })], 
-  controllers: [AppController],
-  providers: [AppService],
+  }),], 
+  controllers: [AppController, AuthController],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}

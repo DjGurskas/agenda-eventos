@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
 
 @Entity('user')
 export class User {
@@ -16,4 +16,5 @@ export class User {
 
   @Column()
   password: string;
+
 }

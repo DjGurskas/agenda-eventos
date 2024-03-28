@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService
@@ -21,25 +22,17 @@ export class AuthService {
   async login (email: string, password: string): Promise<any> {
     const user = await this.userService.findOneByEmail(email);
     const passwordValid = await bcrypt.compare(password, user.password);
+    
     if (!user) {
       throw new UnauthorizedException('Email ou senha inválidos');
     } if (user && passwordValid) {
+      const payload = { sub: user.id };
       return {
         id: user.id,
-        email: user.email
-      };
+        email: user.email,
+        access_token: await this.jwtService.signAsync(payload)
+      }; 
     }
     return null;
-  }
-
-  async loginWithJwt(email: string): Promise<any> {
-    const user = await this.userService.findOneByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('Email ou senha inválidos');
-    }
-    const payload = { sub: user.id };
-    return {
-      access_token: await this.jwtService.signAsync(payload)
-    };
   }
 }
